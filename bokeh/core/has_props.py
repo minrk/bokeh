@@ -650,13 +650,14 @@ class HasProps(with_metaclass(MetaHasProps, object)):
         if IPython:
             from IPython.lib.pretty import RepresentationPrinter
 
+        cls = self.__class__
+
         class _BokehPrettyPrinter(RepresentationPrinter):
             def __init__(self, output, verbose=False, max_width=79, newline='\n'):
                 super(_BokehPrettyPrinter, self).__init__(output, verbose, max_width, newline)
-                self.type_pprinters[HasProps] = lambda obj, p, cycle: obj._repr_pretty(p, cycle)
+                self.type_pprinters[cls] = lambda obj, p, cycle: obj._repr_pretty(p, cycle)
 
         if not IPython:
-            cls = self.__class__
             raise RuntimeError("%s.%s.pretty() requires IPython" % (cls.__module__, cls.__name__))
         else:
             stream = StringIO()
